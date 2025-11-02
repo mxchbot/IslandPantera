@@ -66,4 +66,8 @@ public class WorkerThread extends Thread {
     private void reproduction() {
 
     }
+
+    private void nextOrganism() {
+
+    }
 }

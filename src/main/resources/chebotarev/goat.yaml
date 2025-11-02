@@ -1,0 +1,4 @@
+name: "goat"
+maxWeight: 60
+victims:
+  grass: 100

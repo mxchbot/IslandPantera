@@ -1,0 +1,4 @@
+name: "wolf"
+maxWeight: 50
+victims:
+  goat: 60
