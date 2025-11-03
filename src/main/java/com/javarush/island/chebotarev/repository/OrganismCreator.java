@@ -28,17 +28,13 @@ public class OrganismCreator {
         if (prototype == null) {
             throw new IllegalArgumentException("No such organism: " + name);
         }
-        try {
-            return prototype.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        return prototype.clone();
     }
 
     private static Map<String, Organism> createPrototypes() {
         Map<String, Organism> organisms = new HashMap<>();
         for (Class<?> type : types) {
-            OrganismConfig config = Utils.loadConfig(type, OrganismConfig.class, Utils.mapperYAML);
+            OrganismConfig config = Utils.loadConfigYAML(type, OrganismConfig.class);
             Organism organism = generatePrototype(type, config);
             organisms.put(config.getName(), organism);
         }

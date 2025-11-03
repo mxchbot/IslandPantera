@@ -13,7 +13,11 @@ public class Organism implements Cloneable {
     }
 
     @Override
-    public Organism clone() throws CloneNotSupportedException {
-        return (Organism) super.clone();
+    public Organism clone() {
+        try {
+            return (Organism) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -6,12 +6,13 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
 
-    public static final ObjectMapper mapperYAML = new ObjectMapper(new YAMLFactory());
+    private static final ObjectMapper mapperYAML = new ObjectMapper(new YAMLFactory());
 
-    public static <ET, CT> CT loadConfig(Class<ET> entityClass, Class<CT> configClass, ObjectMapper mapper) {
+    public static <ET, CT> CT loadConfigYAML(Class<ET> entityClass, Class<CT> configClass) {
         if (!entityClass.isAnnotationPresent(Config.class)) {
             throw new IllegalArgumentException("Type " + entityClass.getSimpleName() + " is not annotated with @Config");
         }
@@ -22,10 +23,14 @@ public class Utils {
             throw new RuntimeException("Could not locate " + configPath);
         }
         try {
-            CT config = mapper.readValue(resource, configClass);
+            CT config = mapperYAML.readValue(resource, configClass);
             return Objects.requireNonNull(config);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static int random(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max);
     }
 }

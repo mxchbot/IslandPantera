@@ -1,24 +1,25 @@
 package com.javarush.island.chebotarev.component;
 
+import com.javarush.island.chebotarev.island.Island;
+import com.javarush.island.chebotarev.island.IslandConfig;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.repository.OrganismCreator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CyclicBarrier;
 
 public class Application {
 
-    private final IslandConfig islandConfig;
-    private final OrganismCreator organismCreator;
+    private final Island island;
     private final List<WorkerThread> workers = new ArrayList<>();
     private final List<Organism> organisms = new ArrayList<>();
     private CyclicBarrier barrier;
 
-    public Application(IslandConfig islandConfig, OrganismCreator organismCreator) {
-        this.islandConfig = islandConfig;
-        this.organismCreator = organismCreator;
-        populateIsland();
+    public Application(Island island) {
+        this.island = island;
+        island.populate();
         startWorkers();
     }
 
@@ -30,11 +31,6 @@ public class Application {
 
 
         }
-    }
-
-    private void populateIsland() {
-        Organism organism = organismCreator.create("wolf");
-        System.out.println(organism.getName());
     }
 
     private void startWorkers() {
