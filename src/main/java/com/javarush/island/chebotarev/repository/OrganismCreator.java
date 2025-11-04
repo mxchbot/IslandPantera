@@ -1,8 +1,8 @@
 package com.javarush.island.chebotarev.repository;
 
-import com.javarush.island.chebotarev.component.Utils;
+import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
-import com.javarush.island.chebotarev.organism.OrganismConfig;
+import com.javarush.island.chebotarev.config.OrganismConfig;
 import com.javarush.island.chebotarev.organism.herbivore.Goat;
 import com.javarush.island.chebotarev.organism.insect.Caterpillar;
 import com.javarush.island.chebotarev.organism.plant.Grass;
@@ -33,18 +33,23 @@ public class OrganismCreator {
 
     private static Map<String, Organism> createPrototypes() {
         Map<String, Organism> organisms = new HashMap<>();
+        Map<String, OrganismConfig> configs = Settings.get().getOrganisms();
         for (Class<?> type : types) {
-            OrganismConfig config = Utils.loadConfigYAML(type, OrganismConfig.class);
-            Organism organism = generatePrototype(type, config);
-            organisms.put(config.getName(), organism);
+            String name = type.getSimpleName();
+            OrganismConfig config = configs.get(name);
+            if (config == null) {
+                throw new IllegalArgumentException("No such organism: " + name);
+            }
+            Organism organism = generatePrototype(type, name, config);
+            organisms.put(name, organism);
         }
         return organisms;
     }
 
-    private static Organism generatePrototype(Class<?> type, OrganismConfig config) {
+    private static Organism generatePrototype(Class<?> type, String name, OrganismConfig config) {
         try {
-            Constructor<?> constructor = type.getConstructor(OrganismConfig.class);
-            return (Organism) constructor.newInstance(config);
+            Constructor<?> constructor = type.getConstructor(String.class, OrganismConfig.class);
+            return (Organism) constructor.newInstance(name, config);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

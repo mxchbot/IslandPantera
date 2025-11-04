@@ -1,14 +1,11 @@
 package com.javarush.island.chebotarev.component;
 
+import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.island.Island;
-import com.javarush.island.chebotarev.island.IslandConfig;
 import com.javarush.island.chebotarev.organism.Organism;
-import com.javarush.island.chebotarev.repository.OrganismCreator;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
@@ -17,14 +14,19 @@ public class Application {
     private final List<WorkerThread> workers = new ArrayList<>();
     private final List<Organism> organisms = new ArrayList<>();
     private final Island island;
+    private final View view;
     private final long tickPeriodNanos;
     private long startNanos;
     private long tickCount;
     private CyclicBarrier barrier;
 
-    public Application(Island island) {
+    public Application(Island island, View view) {
         this.island = island;
-        tickPeriodNanos = island.getConfig().getTickPeriodMillis() * 1_000_000;
+        this.view = view;
+        tickPeriodNanos = Settings
+                .get()
+                .getApplicationConfig()
+                .getTickPeriodMillis() * 1_000_000;
         island.populate();
         startWorkers();
     }
@@ -35,6 +37,8 @@ public class Application {
             if (!checkWorkers()) {
                 return;
             }
+
+            view.show();
 
             tickCount++;
             sleepUntilNextTick();

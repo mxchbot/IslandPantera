@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class Cell {
 
-    private final Map<String, List<Organism>> organisms = new HashMap<>();
+    private final Map<String, List<Organism>> residents = new HashMap<>();
 
     public void populate(Organism organism) {
         String organismName = organism.getName();
-        organisms.computeIfAbsent(organismName, k -> new ArrayList<>())
+        residents.computeIfAbsent(organismName, k -> new ArrayList<>())
                 .add(organism);
     }
 }

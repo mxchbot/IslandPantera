@@ -1,0 +1,31 @@
+applicationConfig:
+  tickPeriodMillis: 1000
+
+islandConfig:
+  rows: 10
+  columns: 10
+  population:
+    Wolf: 30
+    Goat: 140
+    Grass: 200
+    Caterpillar: 1000
+
+organisms:
+  Wolf:
+    maxWeight: 50
+    victims:
+      goat: 60
+
+  Goat:
+    maxWeight: 60
+    victims:
+      grass: 100
+
+  Grass:
+    maxWeight: 1
+    victims:
+
+  Caterpillar:
+    maxWeight: 0.01
+    victims:
+      grass: 100

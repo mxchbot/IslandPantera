@@ -1,11 +1,11 @@
 package com.javarush.island.chebotarev.organism.predator;
 
 import com.javarush.island.chebotarev.organism.Organism;
-import com.javarush.island.chebotarev.organism.OrganismConfig;
+import com.javarush.island.chebotarev.config.OrganismConfig;
 
 public class Predator extends Organism {
 
-    public Predator(OrganismConfig config) {
-        super(config);
+    protected Predator(String name, OrganismConfig config) {
+        super(name, config);
     }
 }

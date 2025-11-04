@@ -1,12 +1,10 @@
 package com.javarush.island.chebotarev.organism.predator;
 
-import com.javarush.island.chebotarev.component.Config;
-import com.javarush.island.chebotarev.organism.OrganismConfig;
+import com.javarush.island.chebotarev.config.OrganismConfig;
 
-@Config(filename = "wolf.yaml")
 public class Wolf extends Predator {
 
-    public Wolf(OrganismConfig config) {
-        super(config);
+    public Wolf(String name, OrganismConfig config) {
+        super(name, config);
     }
 }

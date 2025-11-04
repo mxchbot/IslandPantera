@@ -1,6 +1,8 @@
 package com.javarush.island.chebotarev.island;
 
 import com.javarush.island.chebotarev.component.Utils;
+import com.javarush.island.chebotarev.config.IslandConfig;
+import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.repository.OrganismCreator;
 
@@ -8,13 +10,12 @@ import java.util.Map;
 
 public class Island {
 
-    private final IslandConfig config;
     private final OrganismCreator organismCreator;
     private final Cell[][] cells;
 
-    public Island(IslandConfig config, OrganismCreator organismCreator) {
-        this.config = config;
+    public Island(OrganismCreator organismCreator) {
         this.organismCreator = organismCreator;
+        IslandConfig config = Settings.get().getIslandConfig();
         cells = new Cell[config.getRows()][config.getColumns()];
         for (int y = 0; y < cells.length; y++) {
             for (int x = 0; x < cells[y].length; x++) {
@@ -23,12 +24,12 @@ public class Island {
         }
     }
 
-    public IslandConfig getConfig() {
-        return config;
+    public Cell[][] getCells() {
+        return cells;
     }
 
     public void populate() {
-        Map<String, Integer> population = config.getPopulation();
+        Map<String, Integer> population = Settings.get().getIslandConfig().getPopulation();
         population.forEach((key, value) -> populate(organismCreator.create(key), value));
     }
 

@@ -1,8 +1,0 @@
-tickPeriodMillis: 1000
-rows: 10
-columns: 10
-population:
-  wolf: 30
-  goat: 140
-  grass: 200
-  caterpillar: 1000
