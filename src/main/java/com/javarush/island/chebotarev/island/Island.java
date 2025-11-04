@@ -23,6 +23,10 @@ public class Island {
         }
     }
 
+    public IslandConfig getConfig() {
+        return config;
+    }
+
     public void populate() {
         Map<String, Integer> population = config.getPopulation();
         population.forEach((key, value) -> populate(organismCreator.create(key), value));

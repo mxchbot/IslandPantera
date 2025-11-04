@@ -8,7 +8,7 @@ import java.util.Map;
 @Config(filename = "island_config.yaml")
 public class IslandConfig {
 
-    private int tickPeriodMillis;
+    private long tickPeriodMillis;
     private int rows;
     private int columns;
     private Map<String, Integer> population;
@@ -17,7 +17,7 @@ public class IslandConfig {
         return Utils.loadConfigYAML(IslandConfig.class, IslandConfig.class);
     }
 
-    public int getTickPeriodMillis() {
+    public long getTickPeriodMillis() {
         return tickPeriodMillis;
     }
 
