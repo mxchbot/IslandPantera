@@ -16,6 +16,10 @@ public class Organism implements Cloneable {
         return name;
     }
 
+    public OrganismConfig getConfig() {
+        return config;
+    }
+
     @Override
     public Organism clone() {
         try {

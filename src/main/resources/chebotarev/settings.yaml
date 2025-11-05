@@ -1,6 +1,9 @@
 applicationConfig:
   tickPeriodMillis: 1000
 
+consoleConfig:
+  cellCharCount: 4
+
 islandConfig:
   rows: 10
   columns: 10
@@ -12,20 +15,24 @@ islandConfig:
 
 organisms:
   Wolf:
+    icon: 🐺
     maxWeight: 50
     victims:
       goat: 60
 
   Goat:
+    icon: 🐐
     maxWeight: 60
     victims:
       grass: 100
 
   Grass:
+    icon: 🌱
     maxWeight: 1
     victims:
 
   Caterpillar:
+    icon: 🐛
     maxWeight: 0.01
     victims:
       grass: 100

@@ -4,8 +4,13 @@ import java.util.Map;
 
 public class OrganismConfig {
 
+    private String icon;
     private double maxWeight;
     private Map<String, Integer> victims;
+
+    public String getIcon() {
+        return icon;
+    }
 
     public double getMaxWeight() {
         return maxWeight;

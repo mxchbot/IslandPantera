@@ -13,6 +13,7 @@ public class Settings {
     private static final String SETTINGS_PATH = "chebotarev/settings.yaml";
     private static final Settings settings = load();
     private ApplicationConfig applicationConfig;
+    private ConsoleConfig consoleConfig;
     private IslandConfig islandConfig;
     private Map<String, OrganismConfig> organisms;
 
@@ -22,6 +23,10 @@ public class Settings {
 
     public ApplicationConfig getApplicationConfig() {
         return applicationConfig;
+    }
+
+    public ConsoleConfig getConsoleConfig() {
+        return consoleConfig;
     }
 
     public IslandConfig getIslandConfig() {
