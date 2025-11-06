@@ -6,6 +6,7 @@ public class OrganismConfig {
 
     private String icon;
     private double maxWeight;
+    private int maxSpeed;
     private Map<String, Integer> victims;
 
     public String getIcon() {
@@ -14,6 +15,10 @@ public class OrganismConfig {
 
     public double getMaxWeight() {
         return maxWeight;
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
     }
 
     public Map<String, Integer> getVictims() {

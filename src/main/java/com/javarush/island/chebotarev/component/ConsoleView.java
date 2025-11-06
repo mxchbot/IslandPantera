@@ -29,20 +29,31 @@ public class ConsoleView implements View {
         System.out.println(builder);
     }
 
+    @Override
+    public void showThrowable(Throwable throwable) {
+        throwable.printStackTrace();
+    }
+
     private void appendResidents(StringBuilder builder, Cell cell) {
         String icons = cell.getResidents()
                 .values()
                 .stream()
-                .filter(list -> !list.isEmpty())
-                .sorted((list1, list2) -> list2.size() - list1.size())
+                .filter(map -> !map.isEmpty())
+                .sorted((map1, map2) -> map2.size() - map1.size())
                 .limit(cellCharCount)
-                .map(list -> list.getFirst().getConfig().getIcon())
+                .map(map -> map.get(map
+                                .keySet()
+                                .stream()
+                                .findFirst()
+                                .get())
+                        .getConfig()
+                        .getIcon())
                 .collect(Collectors.joining());
         builder.append(icons);
         int iconsCount = (int) cell.getResidents()
                 .values()
                 .stream()
-                .filter(list -> !list.isEmpty())
+                .filter(map -> !map.isEmpty())
                 .limit(cellCharCount)
                 .count();
         if (iconsCount < cellCharCount) {

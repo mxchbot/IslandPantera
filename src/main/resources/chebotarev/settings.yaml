@@ -1,38 +1,52 @@
 applicationConfig:
   tickPeriodMillis: 1000
 
+
 consoleConfig:
   cellCharCount: 4
+
 
 islandConfig:
   rows: 10
   columns: 10
+
   population:
     Wolf: 30
     Goat: 140
     Grass: 200
     Caterpillar: 1000
 
+  cellCapacity:
+    Wolf: 30
+    Goat: 140
+    Grass: 200
+    Caterpillar: 1000
+
+
 organisms:
   Wolf:
     icon: 🐺
     maxWeight: 50
+    maxSpeed: 3
     victims:
       goat: 60
 
   Goat:
     icon: 🐐
     maxWeight: 60
+    maxSpeed: 3
     victims:
       grass: 100
 
   Grass:
     icon: 🌱
     maxWeight: 1
+    maxSpeed: 0
     victims:
 
   Caterpillar:
     icon: 🐛
     maxWeight: 0.01
+    maxSpeed: 0
     victims:
       grass: 100
