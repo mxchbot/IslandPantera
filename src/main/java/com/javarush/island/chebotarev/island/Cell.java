@@ -2,11 +2,9 @@ package com.javarush.island.chebotarev.island;
 
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
+import com.javarush.island.chebotarev.repository.OrganismCreator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
@@ -15,10 +13,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Cell {
 
     private final List<Cell> nextCells = new ArrayList<>();
-    private final Map<String, ConcurrentMap<String, Organism>> residents = new HashMap<>();
-    private final Lock residentsLock = new ReentrantLock(true);
+    private final Map<String, Map<Integer, Organism>> residents = new HashMap<>();
 
-    public Map<String, ConcurrentMap<String, Organism>> getResidents() {
+    public Cell() {
+        Set<String> names = OrganismCreator.getPrototypesNames();
+        for (String name : names) {
+            residents.put(name, new HashMap<>());
+        }
+    }
+
+    public Map<String, Map<Integer, Organism>> getResidents() {
         return residents;
     }
 
@@ -43,6 +47,7 @@ public class Cell {
 
     public boolean acceptOrganism(Organism organism) {
         String organismName = organism.getName();
+        Integer organismId = organism.getId();
         Integer cellCapacity = Settings
                 .get()
                 .getIslandConfig()
@@ -51,38 +56,31 @@ public class Cell {
         if (cellCapacity == null) {
             throw new IllegalArgumentException("Unknown organism name: " + organismName);
         }
-        ConcurrentMap<String, Organism> map;
-        residentsLock.lock();
-        try {
-            map = residents.get(organismName);
-            if (map != null) {
-                if (map.size() >= cellCapacity) {
-                    return false;
-                }
-            } else {
-                map = new ConcurrentHashMap<>();
-                residents.put(organismName, map);
-            }
-        } finally {
-            residentsLock.unlock();
+        Map<Integer, Organism> map = residents.get(organismName);
+        if (map == null) {
+            throw new IllegalArgumentException("Unknown organism name: " + organismName);
         }
-        map.put(organism.getUniqueName(), organism);
+        synchronized (map) {
+            if (map.size() < cellCapacity) {
+                map.put(organismId, organism);
+            } else {
+                return false;
+            }
+        }
         return true;
     }
 
     public void removeOrganism(Organism organism) {
         String organismName = organism.getName();
-        ConcurrentMap<String, Organism> map;
-        residentsLock.lock();
-        try {
-            map = residents.get(organismName);
-            if (map == null) {
-                throw new IllegalArgumentException("Unknown organism name: " + organismName);
-            }
-        } finally {
-            residentsLock.unlock();
+        Integer organismId = organism.getId();
+        Map<Integer, Organism> map = residents.get(organismName);
+        if (map == null) {
+            throw new IllegalArgumentException("Unknown organism name: " + organismName);
         }
-        Organism removedOrganism = map.remove(organism.getUniqueName());
+        Organism removedOrganism;
+        synchronized (map) {
+            removedOrganism = map.remove(organismId);
+        }
         if (organism != removedOrganism) {
             throw new IllegalArgumentException();
         }

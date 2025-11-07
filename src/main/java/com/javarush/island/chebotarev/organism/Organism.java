@@ -12,28 +12,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Organism implements Cloneable {
 
-    private static final AtomicInteger id = new AtomicInteger(0);
+    private static final AtomicInteger idCounter = new AtomicInteger(0);
     private final String name;
     private final OrganismConfig config;
-    private String uniqueName;
+    private Integer id = idCounter.getAndIncrement();
     private Cell cell;
 
     public Organism(String name, OrganismConfig config) {
         this.name = name;
         this.config = config;
-        uniqueName = name + id.getAndIncrement();
     }
 
     public String getName() {
         return name;
     }
 
-    public String getUniqueName() {
-        return uniqueName;
-    }
-
     public OrganismConfig getConfig() {
         return config;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public void setCell(Cell cell) {
@@ -48,7 +47,7 @@ public class Organism implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-        clone.uniqueName = clone.name + id.getAndIncrement();
+        clone.id = idCounter.getAndIncrement();
         return clone;
     }
 

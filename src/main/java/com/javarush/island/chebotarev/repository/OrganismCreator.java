@@ -12,6 +12,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class OrganismCreator {
 
@@ -22,6 +23,10 @@ public class OrganismCreator {
             Caterpillar.class
     };
     private static final Map<String, Organism> prototypes = createPrototypes();
+
+    public static Set<String> getPrototypesNames() {
+        return prototypes.keySet();
+    }
 
     public Organism create(String name) {
         Organism prototype = prototypes.get(name);
