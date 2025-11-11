@@ -142,7 +142,7 @@ public class Organism implements Cloneable {
             return;
         }
 
-        catchPrey();
+        catchPreys();
     }
 
     protected boolean isDisappeared() {
@@ -185,7 +185,7 @@ public class Organism implements Cloneable {
         }
     }
 
-    private void catchPrey() {
+    private void catchPreys() {
         double completeSaturation = config.getCompleteSaturation();
         if (completeSaturation == 0) {
             throw new RuntimeException("Complete saturation has to be greater than 0");
@@ -194,13 +194,8 @@ public class Organism implements Cloneable {
         List<Organism> preys = cell.collectPreys(preysNames);
         Collections.shuffle(preys, Utils.getThreadLocalRandom());
         for (Organism prey : preys) {
-            Integer chance = config.getPreys().get(prey.name);
-            checkChance(chance, prey.name);
-            if (chance < 100) {
-                boolean isPreyCaught = Utils.random(1, (100 + 1)) <= chance;
-                if (!isPreyCaught) {
-                    continue;
-                }
+            if (!tryToCatchPrey(prey)) {
+                continue;
             }
             double needSaturation = completeSaturation - saturation;
             double howMuchFoodWasEaten;
@@ -223,12 +218,27 @@ public class Organism implements Cloneable {
         }
     }
 
-    private void checkChance(Integer chance, String victimName) {
+    private boolean tryToCatchPrey(Organism prey) {
+        Integer chance = config.getPreys().get(prey.name);
+        checkChance(chance, prey.name);
+        if (chance < 100) {
+            boolean isPreyCaught = Utils.random(1, (100 + 1)) <= chance;
+            if (isPreyCaught) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    private void checkChance(Integer chance, String preyName) {
         if (chance == null) {
-            throw new RuntimeException("Unknown victim " + victimName + ", organism " + name);
+            throw new RuntimeException("Unknown prey " + preyName + ", organism " + name);
         }
         if (chance == 0) {
-            throw new RuntimeException("Chance for victim " + victimName + " has to be greater than 0" + ", organism " + name);
+            throw new RuntimeException("Chance for prey " + preyName + " has to be greater than 0" + ", organism " + name);
         }
     }
 
