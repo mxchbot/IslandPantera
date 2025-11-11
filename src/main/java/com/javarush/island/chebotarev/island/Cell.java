@@ -5,10 +5,6 @@ import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.repository.OrganismCreator;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Cell {
 
@@ -45,7 +41,7 @@ public class Cell {
         return new ArrayList<>(nextCells);
     }
 
-    public boolean acceptOrganism(Organism organism) {
+    public boolean addOrganism(Organism organism) {
         String organismName = organism.getName();
         Integer organismId = organism.getId();
         Integer cellCapacity = Settings
@@ -84,5 +80,21 @@ public class Cell {
         if (organism != removedOrganism) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public List<Organism> collectPreys(Set<String> preysNames) {
+        List<Organism> preys = new ArrayList<>();
+        for (String preyName : preysNames) {
+            Map<Integer, Organism> map = residents.get(preyName);
+            if (map == null) {
+                throw new IllegalArgumentException("Unknown prey name: " + preyName);
+            }
+            Collection<Organism> organisms;
+            synchronized (map) {
+                organisms = map.values();
+            }
+            preys.addAll(organisms);
+        }
+        return preys;
     }
 }

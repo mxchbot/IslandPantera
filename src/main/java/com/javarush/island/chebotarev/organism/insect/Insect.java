@@ -1,5 +1,6 @@
 package com.javarush.island.chebotarev.organism.insect;
 
+import com.javarush.island.chebotarev.config.GlobalOrganismConfig;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.config.OrganismConfig;
 

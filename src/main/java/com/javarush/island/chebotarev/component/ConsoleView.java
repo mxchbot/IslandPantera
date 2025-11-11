@@ -17,6 +17,16 @@ public class ConsoleView implements View {
 
     @Override
     public void show() {
+        showIsland();
+        showStatistics();
+    }
+
+    @Override
+    public void showThrowable(Throwable throwable) {
+        throwable.printStackTrace();
+    }
+
+    private void showIsland() {
         StringBuilder builder = new StringBuilder();
         Cell[][] cells = island.getCells();
         for (Cell[] cellsRow : cells) {
@@ -29,9 +39,12 @@ public class ConsoleView implements View {
         System.out.println(builder);
     }
 
-    @Override
-    public void showThrowable(Throwable throwable) {
-        throwable.printStackTrace();
+    private void showStatistics() {
+        String[] counters = island.collectStatistics();
+        for (String counter : counters) {
+            System.out.print(counter + ' ');
+        }
+        System.out.println();
     }
 
     private void appendResidents(StringBuilder builder, Cell cell) {

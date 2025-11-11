@@ -15,6 +15,7 @@ public class Settings {
     private ApplicationConfig applicationConfig;
     private ConsoleConfig consoleConfig;
     private IslandConfig islandConfig;
+    private GlobalOrganismConfig globalOrganismConfig;
     private Map<String, OrganismConfig> organisms;
 
     public static Settings get() {
@@ -31,6 +32,10 @@ public class Settings {
 
     public IslandConfig getIslandConfig() {
         return islandConfig;
+    }
+
+    public GlobalOrganismConfig getGlobalOrganismConfig() {
+        return globalOrganismConfig;
     }
 
     public Map<String, OrganismConfig> getOrganisms() {

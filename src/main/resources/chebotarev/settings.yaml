@@ -23,30 +23,40 @@ islandConfig:
     Caterpillar: 1000
 
 
+globalOrganismConfig:
+  starvation: 25 # as a percentage of complete saturation per tick
+  weightLoss: 25 # as a percentage of max weight per tick
+  dissolution: 5 # a number of ticks
+
+
 organisms:
   Wolf:
     icon: 🐺
     maxWeight: 50
     maxSpeed: 3
-    victims:
-      goat: 60
+    completeSaturation: 8 # kilograms
+    preys:
+      Goat: 60 # chance to catch a prey in percent
 
   Goat:
     icon: 🐐
     maxWeight: 60
     maxSpeed: 3
-    victims:
-      grass: 100
+    completeSaturation: 10
+    preys:
+      Grass: 100
 
   Grass:
     icon: 🌱
     maxWeight: 1
     maxSpeed: 0
-    victims:
+    completeSaturation: 0
+    preys:
 
   Caterpillar:
     icon: 🐛
     maxWeight: 0.01
     maxSpeed: 0
-    victims:
-      grass: 100
+    completeSaturation: 0
+    preys:
+      Grass: 100

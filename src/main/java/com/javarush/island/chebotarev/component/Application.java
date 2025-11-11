@@ -2,14 +2,18 @@ package com.javarush.island.chebotarev.component;
 
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.island.Island;
+import com.javarush.island.chebotarev.organism.Organism;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class Application {
 
+    private final long TICK_BARRIER_TIMEOUT_SECONDS = 2;
     private final List<ThreadWorker> workers = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final long tickPeriodNanos;
@@ -29,10 +33,12 @@ public class Application {
     public void run() throws Throwable {
         startNanos = System.nanoTime();
         while (true) {
-            tickBarrier.await();
-
+            //tickBarrier.await();
+            try {
+                tickBarrier.await(TICK_BARRIER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+            }
             checkThreads();
-
             tickCount++;
             sleepUntilNextTick();
         }

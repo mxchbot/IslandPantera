@@ -1,5 +1,6 @@
 package com.javarush.island.chebotarev.repository;
 
+import com.javarush.island.chebotarev.config.GlobalOrganismConfig;
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.config.OrganismConfig;
@@ -24,11 +25,19 @@ public class OrganismCreator {
     };
     private static final Map<String, Organism> prototypes = createPrototypes();
 
+    public static String getIcon(String name) {
+        Organism organism = prototypes.get(name);
+        if (organism == null) {
+            throw new IllegalArgumentException("No such organism: " + name);
+        }
+        return organism.getConfig().getIcon();
+    }
+
     public static Set<String> getPrototypesNames() {
         return prototypes.keySet();
     }
 
-    public Organism create(String name) {
+    public static Organism create(String name) {
         Organism prototype = prototypes.get(name);
         if (prototype == null) {
             throw new IllegalArgumentException("No such organism: " + name);
@@ -55,7 +64,10 @@ public class OrganismCreator {
         try {
             Constructor<?> constructor = type.getConstructor(String.class, OrganismConfig.class);
             return (Organism) constructor.newInstance(name, config);
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException
+                 | InvocationTargetException
+                 | InstantiationException
+                 | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

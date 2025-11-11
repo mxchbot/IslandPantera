@@ -12,8 +12,7 @@ public class ConsoleRunner {
     public static void main(String[] args) {
         View view = null;
         try {
-            OrganismCreator organismCreator = new OrganismCreator();
-            Island island = new Island(organismCreator);
+            Island island = new Island();
             view = new ConsoleView(island);
             Application application = new Application(view, island);
             application.run();

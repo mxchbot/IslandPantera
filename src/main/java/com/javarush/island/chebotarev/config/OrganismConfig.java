@@ -7,7 +7,9 @@ public class OrganismConfig {
     private String icon;
     private double maxWeight;
     private int maxSpeed;
-    private Map<String, Integer> victims;
+    private double completeSaturation;
+
+    private Map<String, Integer> preys;
 
     public String getIcon() {
         return icon;
@@ -21,7 +23,11 @@ public class OrganismConfig {
         return maxSpeed;
     }
 
-    public Map<String, Integer> getVictims() {
-        return victims;
+    public double getCompleteSaturation() {
+        return completeSaturation;
+    }
+
+    public Map<String, Integer> getPreys() {
+        return preys;
     }
 }
