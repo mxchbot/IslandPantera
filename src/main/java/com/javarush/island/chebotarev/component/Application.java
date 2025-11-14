@@ -46,9 +46,10 @@ public class Application {
 
     private void startThreads(View view, Island island) {
         OnStartedTick onStartedTick = new OnStartedTick(view);
-        tickBarrier = new CyclicBarrier((Utils.availableProcessors + 1), onStartedTick);
-        for (int i = 0; i < Utils.availableProcessors; i++) {
-            ThreadWorker threadWorker = new ThreadWorker(island, tickBarrier);
+        int threadsNum = 1;//Utils.availableProcessors;
+        tickBarrier = new CyclicBarrier((threadsNum + 1), onStartedTick);
+        for (int i = 0; i < threadsNum; i++) {
+            ThreadWorker threadWorker = new ThreadWorker(island, tickBarrier, threadsNum);
             Thread thread = new Thread(threadWorker);
             thread.setDaemon(true);
             thread.start();

@@ -48,7 +48,7 @@ public class ConsoleView implements View {
     }
 
     private void appendResidents(StringBuilder builder, Cell cell) {
-        String icons = cell.getResidents()
+        String icons = cell.getGroups()
                 .values()
                 .stream()
                 .filter(map -> !map.isEmpty())
@@ -63,7 +63,7 @@ public class ConsoleView implements View {
                         .getIcon())
                 .collect(Collectors.joining());
         builder.append(icons);
-        int iconsCount = (int) cell.getResidents()
+        int iconsCount = (int) cell.getGroups()
                 .values()
                 .stream()
                 .filter(map -> !map.isEmpty())

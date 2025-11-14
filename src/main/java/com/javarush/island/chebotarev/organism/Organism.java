@@ -5,6 +5,7 @@ import com.javarush.island.chebotarev.config.GlobalOrganismConfig;
 import com.javarush.island.chebotarev.config.OrganismConfig;
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.island.Cell;
+import com.javarush.island.chebotarev.repository.OrganismCreator;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,9 +33,10 @@ public class Organism implements Cloneable {
         GlobalOrganismConfig globalConfig = Settings.get().getGlobalOrganismConfig();
         starvationKilos = config.getCompleteSaturation() * globalConfig.getStarvation() * 0.01;
         weightLossKilos = config.getMaxWeight() * globalConfig.getWeightLoss() * 0.01;
-        minWeight = config.getMaxWeight() / 3.0;
+        minWeight = config.getMaxWeight() / 4.0;
         dissolutionTicks = globalConfig.getDissolution();
         weight = config.getMaxWeight();
+        saturation = config.getCompleteSaturation() * 0.5;
     }
 
     public String getName() {
@@ -61,6 +63,14 @@ public class Organism implements Cloneable {
         this.globalListIndex = globalListIndex;
     }
 
+    public double getWeight() {
+        return weight;
+    }
+
+    protected void setWeight(double weight) {
+        this.weight = weight;
+    }
+
     @Override
     public Organism clone() {
         Organism clone;
@@ -79,9 +89,7 @@ public class Organism implements Cloneable {
     }
 
     public void movement() {
-        if (becamePrey
-                || isDead()
-                || isDisappeared()) {
+        if (!isAlive()) {
             return;
         }
         int maxSpeed = config.getMaxSpeed();
@@ -145,8 +153,40 @@ public class Organism implements Cloneable {
         catchPreys();
     }
 
+    public List<Organism> reproduction(Collection<Organism> organisms) {
+        int countOfWellFed = 0;
+        for (Organism organism : organisms) {
+            if (organism.isAlive()
+                    && (organism.saturation > 0)
+                    && !Utils.isZero(organism.saturation)) {
+                countOfWellFed++;
+            }
+        }
+        if (countOfWellFed > 1) {
+            int childrenNum = countOfWellFed / 2;
+            return createChildren(childrenNum);
+        } else {
+            return null;
+        }
+    }
+
     protected boolean isDisappeared() {
         return Utils.isZero(weight) || Utils.isNegative(weight);
+    }
+
+    protected List<Organism> createChildren(int childrenNum) {
+        List<Organism> children = new ArrayList<>(childrenNum);
+        Organism prototype = OrganismCreator.create(name);
+        for (int i = 0; i < childrenNum; i++) {
+            Organism clone = prototype.clone();
+            clone.weight = config.getMaxWeight() / 3.0;
+            children.add(clone);
+        }
+        return children;
+    }
+
+    private boolean isAlive() {
+        return !becamePrey && !isDead() && !isDisappeared();
     }
 
     private void dissolution(List<Organism> disappearedOrganisms) {
@@ -174,9 +214,10 @@ public class Organism implements Cloneable {
                 saturation = newSaturation;
             }
             double maxWeight = config.getMaxWeight();
+            double weightGain = realStarvationKilos * 0.5;
             synchronized (this) {
                 if (!becamePrey) {
-                    weight += realStarvationKilos * 0.5;
+                    weight += weightGain;
                     if (weight > maxWeight) {
                         weight = maxWeight;
                     }

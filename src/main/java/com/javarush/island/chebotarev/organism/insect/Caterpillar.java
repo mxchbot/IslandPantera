@@ -15,8 +15,4 @@ public class Caterpillar extends Insect {
     @Override
     public void movement() {
     }
-
-    @Override
-    public void eating(List<Organism> disappearedOrganisms) {
-    }
 }

@@ -1,9 +1,9 @@
 package com.javarush.island.chebotarev.island;
 
 import com.javarush.island.chebotarev.component.Utils;
-import com.javarush.island.chebotarev.config.IslandConfig;
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
+import com.javarush.island.chebotarev.organism.OrganismGroup;
 import com.javarush.island.chebotarev.repository.OrganismCreator;
 
 import java.util.*;
@@ -11,25 +11,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Island {
 
-    private final List<Organism> organisms = new ArrayList<>();
-    private final AtomicInteger organismIndex = new AtomicInteger(0);
+    private final GlobalOrganismList globalOrganismList = new GlobalOrganismList();
     private final Map<String, OrganismCounter> organismsCounters = new HashMap<>();
-    private final Cell[][] cells = new Cell[Settings
-            .get()
-            .getIslandConfig()
-            .getRows()]
-            [Settings
-            .get()
-            .getIslandConfig()
-            .getColumns()];
+    private final int rows = Settings.get().getIslandConfig().getRows();
+    private final int columns = Settings.get().getIslandConfig().getColumns();
+    private final Cell[][] cells = new Cell[rows][columns];
+    private final OrganismGroupsIterator organismGroupsIterator = new OrganismGroupsIterator(cells);
 
     public Island() {
         createOrganismsCounters();
         createCells();
+        organismGroupsIterator.reset();
+    }
+
+    public GlobalOrganismList getGlobalOrganismList() {
+        return globalOrganismList;
     }
 
     public Cell[][] getCells() {
         return cells;
+    }
+
+    public OrganismGroupsIterator getOrganismGroupsIterator() {
+        return organismGroupsIterator;
     }
 
     public void populate() {
@@ -37,29 +41,35 @@ public class Island {
         population.forEach((name, num) -> populate(OrganismCreator.create(name), num));
     }
 
-    public boolean hasNextOrganism() {
-        return (organismIndex.get() < organisms.size());
-    }
-
-    public Organism nextOrganism() {
-        int index = organismIndex.getAndIncrement();
-        if (index < organisms.size()) {
-            return organisms.get(index);
-        } else {
-            return null;
+    public void add(List<Organism> organismList, OrganismGroup group) {
+        Cell groupCell = group.getCell();
+        List<Organism> extraOrganisms = add(organismList, groupCell);
+        if (extraOrganisms != null) {
+            List<Cell> nextCells = groupCell.cloneNextCells();
+            Collections.shuffle(nextCells, Utils.getThreadLocalRandom());
+            for (Cell nextCell : nextCells) {
+                extraOrganisms = add(extraOrganisms, nextCell);
+                if (extraOrganisms == null) {
+                    break;
+                }
+            }
         }
-    }
-
-    public void resetGlobalListIndex() {
-        organismIndex.set(0);
+        int lastIndex = (extraOrganisms == null)
+                ? organismList.size() - 1
+                : organismList.size() - 1 - extraOrganisms.size();
+        for (int i = 0; i <= lastIndex; i++) {
+            globalOrganismList.safeAdd(organismList.get(i));
+        }
+        OrganismCounter organismCounter = organismsCounters.get(organismList.getFirst().getName());
+        if (organismCounter == null) {
+            throw new IllegalArgumentException();
+        }
+        organismCounter.add(lastIndex + 1);
     }
 
     public void remove(Organism organism) {
         organism.removeFromCell();
-        Organism removedOrganism = organisms.set(organism.getGlobalListIndex(), null);
-        if (organism != removedOrganism) {
-            throw new IllegalArgumentException();
-        }
+        globalOrganismList.remove(organism);
         OrganismCounter organismCounter = organismsCounters.get(organism.getName());
         if (organismCounter == null) {
             throw new IllegalArgumentException();
@@ -71,7 +81,7 @@ public class Island {
         String[] lines = new String[organismsCounters.size()];
         int i = 0;
         for (OrganismCounter counter : organismsCounters.values()) {
-            lines[i++] = counter.getIcon() + ": " + counter.getCounter();
+            lines[i++] = counter.getIcon() + ":" + counter.getCounter();
         }
         return lines;
     }
@@ -105,8 +115,7 @@ public class Island {
             Cell randomCell = cells[rowIndex][columnIndex];
             if (randomCell.addOrganism(clone)) {
                 clone.setCell(randomCell);
-                organisms.add(clone);
-                clone.setGlobalListIndex(organisms.size() - 1);
+                globalOrganismList.add(clone);
             } else {
                 i--;
             }
@@ -116,6 +125,18 @@ public class Island {
             throw new IllegalArgumentException();
         }
         organismCounter.add(population);
+    }
+
+    private List<Organism> add(List<Organism> organismList, Cell cell) {
+        List<Organism> extraOrganisms = cell.addOrganismList(organismList);
+        int addedOrganismNum = (extraOrganisms == null)
+                ? organismList.size()
+                : organismList.size() - extraOrganisms.size();
+        for (int i = 0; i < addedOrganismNum; i++) {
+            Organism organism = organismList.get(i);
+            organism.setCell(cell);
+        }
+        return extraOrganisms;
     }
 
     private static class OrganismCounter {
@@ -137,10 +158,6 @@ public class Island {
 
         public void add(int population) {
             counter.addAndGet(population);
-        }
-
-        public void increment() {
-            counter.incrementAndGet();
         }
 
         public void decrement() {

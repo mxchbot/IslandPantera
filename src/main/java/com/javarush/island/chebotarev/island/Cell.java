@@ -9,17 +9,21 @@ import java.util.*;
 public class Cell {
 
     private final List<Cell> nextCells = new ArrayList<>();
-    private final Map<String, Map<Integer, Organism>> residents = new HashMap<>();
+    private final Map<String, Map<Integer, Organism>> groups = new HashMap<>();
 
     public Cell() {
         Set<String> names = OrganismCreator.getPrototypesNames();
         for (String name : names) {
-            residents.put(name, new HashMap<>());
+            groups.put(name, new HashMap<>());
         }
     }
 
-    public Map<String, Map<Integer, Organism>> getResidents() {
-        return residents;
+    public Map<String, Map<Integer, Organism>> getGroups() {
+        return groups;
+    }
+
+    public Iterator<Map<Integer, Organism>> getGroupsIterator() {
+        return groups.values().iterator();
     }
 
     public void updateNextCells(Cell[][] cells, int row, int column) {
@@ -44,21 +48,11 @@ public class Cell {
     public boolean addOrganism(Organism organism) {
         String organismName = organism.getName();
         Integer organismId = organism.getId();
-        Integer cellCapacity = Settings
-                .get()
-                .getIslandConfig()
-                .getCellCapacity()
-                .get(organismName);
-        if (cellCapacity == null) {
-            throw new IllegalArgumentException("Unknown organism name: " + organismName);
-        }
-        Map<Integer, Organism> map = residents.get(organismName);
-        if (map == null) {
-            throw new IllegalArgumentException("Unknown organism name: " + organismName);
-        }
-        synchronized (map) {
-            if (map.size() < cellCapacity) {
-                map.put(organismId, organism);
+        int cellCapacity = getCellCapacity(organismName);
+        Map<Integer, Organism> group = getGroup(organismName);
+        synchronized (group) {
+            if (group.size() < cellCapacity) {
+                group.put(organismId, organism);
             } else {
                 return false;
             }
@@ -66,26 +60,49 @@ public class Cell {
         return true;
     }
 
+    public List<Organism> addOrganismList(List<Organism> organismList) {
+        String organismName = organismList.getFirst().getName();
+        int cellCapacity = getCellCapacity(organismName);
+        Map<Integer, Organism> group = getGroup(organismName);
+        int addedOrganismsCount = 0;
+        for (Organism organism : organismList) {
+            Integer organismId = organism.getId();
+            synchronized (group) {
+                if (group.size() < cellCapacity) {
+                    group.put(organismId, organism);
+                } else {
+                    break;
+                }
+            }
+            addedOrganismsCount++;
+        }
+        if (addedOrganismsCount == organismList.size()) {
+            return null;
+        } else {
+            return organismList.subList(addedOrganismsCount, organismList.size());
+        }
+    }
+
     public void removeOrganism(Organism organism) {
         String organismName = organism.getName();
         Integer organismId = organism.getId();
-        Map<Integer, Organism> map = residents.get(organismName);
-        if (map == null) {
+        Map<Integer, Organism> group = groups.get(organismName);
+        if (group == null) {
             throw new IllegalArgumentException("Unknown organism name: " + organismName);
         }
         Organism removedOrganism;
-        synchronized (map) {
-            removedOrganism = map.remove(organismId);
+        synchronized (group) {
+            removedOrganism = group.remove(organismId);
         }
         if (organism != removedOrganism) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Name: " + organism.getName() + ", removed: " + removedOrganism);
         }
     }
 
     public List<Organism> collectPreys(Set<String> preysNames) {
         List<Organism> preys = new ArrayList<>();
         for (String preyName : preysNames) {
-            Map<Integer, Organism> map = residents.get(preyName);
+            Map<Integer, Organism> map = groups.get(preyName);
             if (map == null) {
                 throw new IllegalArgumentException("Unknown prey name: " + preyName);
             }
@@ -96,5 +113,25 @@ public class Cell {
             preys.addAll(organisms);
         }
         return preys;
+    }
+
+    private int getCellCapacity(String organismName) {
+        Integer cellCapacity = Settings
+                .get()
+                .getIslandConfig()
+                .getCellCapacity()
+                .get(organismName);
+        if (cellCapacity == null) {
+            throw new IllegalArgumentException("Unknown organism name: " + organismName);
+        }
+        return cellCapacity;
+    }
+
+    private Map<Integer, Organism> getGroup(String organismName) {
+        Map<Integer, Organism> group = groups.get(organismName);
+        if (group == null) {
+            throw new IllegalArgumentException("Unknown organism name: " + organismName);
+        }
+        return group;
     }
 }
