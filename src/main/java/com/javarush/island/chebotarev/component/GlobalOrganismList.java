@@ -1,4 +1,4 @@
-package com.javarush.island.chebotarev.island;
+package com.javarush.island.chebotarev.component;
 
 import com.javarush.island.chebotarev.organism.Organism;
 

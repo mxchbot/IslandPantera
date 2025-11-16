@@ -1,6 +1,5 @@
 package com.javarush.island.chebotarev.organism.herbivore;
 
-import com.javarush.island.chebotarev.config.GlobalOrganismConfig;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.config.OrganismConfig;
 

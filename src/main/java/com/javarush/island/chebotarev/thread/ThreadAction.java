@@ -1,4 +1,4 @@
-package com.javarush.island.chebotarev.component;
+package com.javarush.island.chebotarev.thread;
 
 public abstract class ThreadAction implements Runnable {
 

@@ -1,10 +1,11 @@
-package com.javarush.island.chebotarev.component;
+package com.javarush.island.chebotarev.thread;
 
-import com.javarush.island.chebotarev.island.GlobalOrganismList;
+import com.javarush.island.chebotarev.component.Children;
+import com.javarush.island.chebotarev.component.OrganismGroup;
+import com.javarush.island.chebotarev.component.GlobalOrganismList;
 import com.javarush.island.chebotarev.island.Island;
-import com.javarush.island.chebotarev.island.OrganismGroupsIterator;
+import com.javarush.island.chebotarev.component.OrganismGroupsIterator;
 import com.javarush.island.chebotarev.organism.Organism;
-import com.javarush.island.chebotarev.organism.OrganismGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,9 @@ public class ThreadWorker extends ThreadAction {
     private static CyclicBarrier eatingBarrier;
     private static CyclicBarrier clearingBarrier;
     private static CyclicBarrier reproductionBarrier;
+    private static CyclicBarrier populationBarrier;
     private final List<Organism> disappearedOrganisms = new ArrayList<>();
+    private final List<Children> childrenList = new ArrayList<>();
 
     public ThreadWorker(Island island,
                         CyclicBarrier tickBarrier,
@@ -60,6 +63,9 @@ public class ThreadWorker extends ThreadAction {
         if (reproductionBarrier == null) {
             reproductionBarrier = new CyclicBarrier(threadsNum,
                     onCompletedOrganismGroupsIteration);
+        }
+        if (populationBarrier == null) {
+            populationBarrier = new CyclicBarrier(threadsNum);
         }
     }
 
@@ -120,12 +126,12 @@ public class ThreadWorker extends ThreadAction {
         while (organismGroupsIterator.hasNextGroup()) {
             OrganismGroup group = organismGroupsIterator.nextGroup();
             if (group != null) {
-                List<Organism> children = group.reproduction();
+                Children children = group.reproduction();
                 if (children != null) {
                     if (children.isEmpty()) {
                         throw new IllegalStateException("There are no children");
                     }
-                    island.add(children, group);
+                    childrenList.add(children);
                 }
             }
         }
@@ -135,6 +141,17 @@ public class ThreadWorker extends ThreadAction {
         if (throwable != null) {
             throw throwable;
         }
+
+        population();
+    }
+
+    private void population() throws Throwable {
+        for (Children children : childrenList) {
+            island.add(children);
+        }
+        childrenList.clear();
+
+        populationBarrier.await();
     }
 
     private static class OnCompletedGlobalListIteration extends ThreadAction {
@@ -163,7 +180,7 @@ public class ThreadWorker extends ThreadAction {
         }
 
         @Override
-        protected void doAction() throws Throwable {
+        protected void doAction() {
             organismGroupsIterator.reset();
             globalOrganismList.resetOrganismIndex();
         }

@@ -260,18 +260,21 @@ public class Organism implements Cloneable {
     }
 
     private boolean tryToCatchPrey(Organism prey) {
+        if (prey.isWounded()) {
+            return true;
+        }
         Integer chance = config.getPreys().get(prey.name);
         checkChance(chance, prey.name);
         if (chance < 100) {
             boolean isPreyCaught = Utils.random(1, (100 + 1)) <= chance;
-            if (isPreyCaught) {
-                return true;
-            } else {
-                return false;
-            }
+            return isPreyCaught;
         } else {
             return true;
         }
+    }
+
+    private synchronized boolean isWounded() {
+        return becamePrey;
     }
 
     private void checkChance(Integer chance, String preyName) {

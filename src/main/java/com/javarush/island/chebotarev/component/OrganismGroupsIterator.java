@@ -1,8 +1,8 @@
-package com.javarush.island.chebotarev.island;
+package com.javarush.island.chebotarev.component;
 
 import com.javarush.island.chebotarev.config.Settings;
+import com.javarush.island.chebotarev.island.Cell;
 import com.javarush.island.chebotarev.organism.Organism;
-import com.javarush.island.chebotarev.organism.OrganismGroup;
 
 import java.util.Iterator;
 import java.util.Map;

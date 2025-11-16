@@ -1,13 +1,12 @@
 package com.javarush.island.chebotarev.repository;
 
-import com.javarush.island.chebotarev.config.GlobalOrganismConfig;
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.config.OrganismConfig;
-import com.javarush.island.chebotarev.organism.herbivore.Goat;
+import com.javarush.island.chebotarev.organism.herbivore.*;
 import com.javarush.island.chebotarev.organism.insect.Caterpillar;
 import com.javarush.island.chebotarev.organism.plant.Grass;
-import com.javarush.island.chebotarev.organism.predator.Wolf;
+import com.javarush.island.chebotarev.organism.predator.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +18,19 @@ public class OrganismCreator {
 
     private static final Class<?>[] types = {
             Wolf.class,
+            Boa.class,
+            Fox.class,
+            Bear.class,
+            Eagle.class,
+            Horse.class,
+            Deer.class,
+            Rabbit.class,
+            Mouse.class,
             Goat.class,
+            Sheep.class,
+            Boar.class,
+            Buffalo.class,
+            Duck.class,
             Grass.class,
             Caterpillar.class
     };

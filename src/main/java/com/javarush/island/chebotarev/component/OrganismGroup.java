@@ -1,6 +1,7 @@
-package com.javarush.island.chebotarev.organism;
+package com.javarush.island.chebotarev.component;
 
 import com.javarush.island.chebotarev.island.Cell;
+import com.javarush.island.chebotarev.organism.Organism;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,12 +21,15 @@ public class OrganismGroup {
         return cell;
     }
 
-    public List<Organism> reproduction() {
+    public Children reproduction() {
         Collection<Organism> organismsInGroup = group.values();
         if (organismsInGroup.isEmpty()) {
             throw new IllegalStateException("There are no organisms in group");
         }
         Organism organism = organismsInGroup.iterator().next();
-        return organism.reproduction(organismsInGroup);
+        List<Organism> list = organism.reproduction(organismsInGroup);
+        return (list != null)
+                ? new Children(list, cell)
+                : null;
     }
 }

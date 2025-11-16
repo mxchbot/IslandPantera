@@ -1,11 +1,9 @@
 package com.javarush.island.chebotarev;
 
 import com.javarush.island.chebotarev.component.Application;
-import com.javarush.island.chebotarev.component.ConsoleView;
-import com.javarush.island.chebotarev.component.View;
-import com.javarush.island.chebotarev.component.ThreadWorker;
+import com.javarush.island.chebotarev.view.ConsoleView;
+import com.javarush.island.chebotarev.view.View;
 import com.javarush.island.chebotarev.island.Island;
-import com.javarush.island.chebotarev.repository.OrganismCreator;
 
 public class ConsoleRunner {
 

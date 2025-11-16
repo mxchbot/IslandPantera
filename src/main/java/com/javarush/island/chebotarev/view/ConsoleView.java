@@ -1,4 +1,4 @@
-package com.javarush.island.chebotarev.component;
+package com.javarush.island.chebotarev.view;
 
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.island.Cell;

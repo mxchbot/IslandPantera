@@ -1,9 +1,11 @@
 package com.javarush.island.chebotarev.island;
 
+import com.javarush.island.chebotarev.component.Children;
+import com.javarush.island.chebotarev.component.GlobalOrganismList;
+import com.javarush.island.chebotarev.component.OrganismGroupsIterator;
 import com.javarush.island.chebotarev.component.Utils;
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.organism.Organism;
-import com.javarush.island.chebotarev.organism.OrganismGroup;
 import com.javarush.island.chebotarev.repository.OrganismCreator;
 
 import java.util.*;
@@ -41,11 +43,12 @@ public class Island {
         population.forEach((name, num) -> populate(OrganismCreator.create(name), num));
     }
 
-    public void add(List<Organism> organismList, OrganismGroup group) {
-        Cell groupCell = group.getCell();
-        List<Organism> extraOrganisms = add(organismList, groupCell);
+    public void add(Children children) {
+        List<Organism> list = children.list();
+        Cell cell = children.cell();
+        List<Organism> extraOrganisms = add(list, cell);
         if (extraOrganisms != null) {
-            List<Cell> nextCells = groupCell.cloneNextCells();
+            List<Cell> nextCells = cell.cloneNextCells();
             Collections.shuffle(nextCells, Utils.getThreadLocalRandom());
             for (Cell nextCell : nextCells) {
                 extraOrganisms = add(extraOrganisms, nextCell);
@@ -55,12 +58,12 @@ public class Island {
             }
         }
         int lastIndex = (extraOrganisms == null)
-                ? organismList.size() - 1
-                : organismList.size() - 1 - extraOrganisms.size();
+                ? list.size() - 1
+                : list.size() - 1 - extraOrganisms.size();
         for (int i = 0; i <= lastIndex; i++) {
-            globalOrganismList.safeAdd(organismList.get(i));
+            globalOrganismList.safeAdd(list.get(i));
         }
-        OrganismCounter organismCounter = organismsCounters.get(organismList.getFirst().getName());
+        OrganismCounter organismCounter = organismsCounters.get(list.getFirst().getName());
         if (organismCounter == null) {
             throw new IllegalArgumentException();
         }

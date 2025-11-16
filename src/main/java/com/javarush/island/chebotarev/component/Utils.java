@@ -1,6 +1,5 @@
 package com.javarush.island.chebotarev.component;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {

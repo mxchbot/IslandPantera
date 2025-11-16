@@ -1,4 +1,4 @@
-package com.javarush.island.chebotarev.component;
+package com.javarush.island.chebotarev.view;
 
 public interface View {
 
