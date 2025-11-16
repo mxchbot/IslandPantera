@@ -14,10 +14,11 @@ import java.util.concurrent.TimeoutException;
 
 public class Application {
 
-    private final long TICK_BARRIER_TIMEOUT_SECONDS = 3;
+    private final long TICK_BARRIER_TIMEOUT_SECONDS = 5;
     private final List<ThreadWorker> workers = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final long tickPeriodNanos;
+    private final OnStartedTick onStartedTick;
     private CyclicBarrier tickBarrier;
     private long startNanos;
     private long tickCount;
@@ -27,16 +28,22 @@ public class Application {
                 .get()
                 .getApplicationConfig()
                 .getTickPeriodMillis() * 1_000_000;
+        onStartedTick = new OnStartedTick(view);
         island.populate();
-        startThreads(view, island);
+        startThreads(island);
     }
 
     public void run() throws Throwable {
+        Thread currentthread = Thread.currentThread();
         startNanos = System.nanoTime();
-        while (true) {
+        while (!currentthread.isInterrupted()) {
             try {
                 tickBarrier.await(TICK_BARRIER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
+            }
+            Throwable throwable = onStartedTick.getThrowable();
+            if (throwable != null) {
+                throw throwable;
             }
             checkThreads();
             tickCount++;
@@ -44,8 +51,7 @@ public class Application {
         }
     }
 
-    private void startThreads(View view, Island island) {
-        OnStartedTick onStartedTick = new OnStartedTick(view);
+    private void startThreads(Island island) {
         int threadsNum = Utils.availableProcessors;
         tickBarrier = new CyclicBarrier((threadsNum + 1), onStartedTick);
         for (int i = 0; i < threadsNum; i++) {

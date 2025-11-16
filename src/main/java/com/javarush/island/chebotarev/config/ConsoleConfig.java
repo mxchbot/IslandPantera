@@ -2,9 +2,9 @@ package com.javarush.island.chebotarev.config;
 
 public class ConsoleConfig {
 
-    private int cellCharCount;
+    private int cellIconCount;
 
-    public int getCellCharCount() {
-        return cellCharCount;
+    public int getCellIconCount() {
+        return cellIconCount;
     }
 }

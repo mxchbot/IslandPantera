@@ -14,6 +14,7 @@ public class Settings {
     private static final Settings settings = load();
     private ApplicationConfig applicationConfig;
     private ConsoleConfig consoleConfig;
+    private WindowConfig windowConfig;
     private IslandConfig islandConfig;
     private GlobalOrganismConfig globalOrganismConfig;
     private Map<String, OrganismConfig> organisms;
@@ -28,6 +29,10 @@ public class Settings {
 
     public ConsoleConfig getConsoleConfig() {
         return consoleConfig;
+    }
+
+    public WindowConfig getWindowConfig() {
+        return windowConfig;
     }
 
     public IslandConfig getIslandConfig() {

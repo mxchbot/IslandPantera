@@ -3,7 +3,13 @@ applicationConfig:
 
 
 consoleConfig:
-  cellCharCount: 4
+  cellIconCount: 4
+
+
+windowConfig:
+  width: 1400
+  height: 800
+  cellIconCount: 4
 
 
 islandConfig:
@@ -16,17 +22,17 @@ islandConfig:
     Fox: 100
     Bear: 100
     Eagle: 100
-    Horse: 1000
-    Deer: 2000
-    Rabbit: 1000
-    Mouse: 1000
-    Goat: 1000
-    Sheep: 1000
-    Boar: 1000
-    Buffalo: 1000
-    Duck: 1000
+    Horse: 100
+    Deer: 200
+    Rabbit: 100
+    Mouse: 100
+    Goat: 100
+    Sheep: 100
+    Boar: 100
+    Buffalo: 100
+    Duck: 100
     Grass: 100000
-    Caterpillar: 1000
+    Caterpillar: 10
 
   cellCapacity:
     Wolf: 30

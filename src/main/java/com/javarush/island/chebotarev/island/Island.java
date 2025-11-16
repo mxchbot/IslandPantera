@@ -70,6 +70,10 @@ public class Island {
         organismCounter.add(lastIndex + 1);
     }
 
+    public void resetGlobalOrganismIndex() {
+        globalOrganismList.resetOrganismIndex();
+    }
+
     public void remove(Organism organism) {
         organism.removeFromCell();
         globalOrganismList.remove(organism);
@@ -84,7 +88,7 @@ public class Island {
         String[] lines = new String[organismsCounters.size()];
         int i = 0;
         for (OrganismCounter counter : organismsCounters.values()) {
-            lines[i++] = counter.getIcon() + ":" + counter.getCounter();
+            lines[i++] = counter.getIcon() + '(' + counter.getName() + "):" + counter.getCounter();
         }
         return lines;
     }
@@ -93,7 +97,7 @@ public class Island {
         Set<String> names = OrganismCreator.getPrototypesNames();
         for (String name : names) {
             String icon = OrganismCreator.getIcon(name);
-            organismsCounters.put(name, new OrganismCounter(icon));
+            organismsCounters.put(name, new OrganismCounter(icon, name));
         }
     }
 
@@ -145,14 +149,20 @@ public class Island {
     private static class OrganismCounter {
 
         private final String icon;
+        private final String name;
         private final AtomicInteger counter = new AtomicInteger(0);
 
-        public OrganismCounter(String icon) {
+        public OrganismCounter(String icon, String name) {
             this.icon = icon;
+            this.name = name;
         }
 
         public String getIcon() {
             return icon;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public int getCounter() {

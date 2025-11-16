@@ -2,17 +2,11 @@ package com.javarush.island.chebotarev.view;
 
 import com.javarush.island.chebotarev.config.Settings;
 import com.javarush.island.chebotarev.island.Cell;
-import com.javarush.island.chebotarev.island.Island;
 
-import java.util.stream.Collectors;
+public class ConsoleView extends View {
 
-public class ConsoleView implements View {
-
-    private final int cellCharCount = Settings.get().getConsoleConfig().getCellCharCount();
-    private final Island island;
-
-    public ConsoleView(Island island) {
-        this.island = island;
+    public ConsoleView() {
+        super(Settings.get().getConsoleConfig().getCellIconCount());
     }
 
     @Override
@@ -48,29 +42,16 @@ public class ConsoleView implements View {
     }
 
     private void appendResidents(StringBuilder builder, Cell cell) {
-        String icons = cell.getGroups()
-                .values()
-                .stream()
-                .filter(map -> !map.isEmpty())
-                .sorted((map1, map2) -> map2.size() - map1.size())
-                .limit(cellCharCount)
-                .map(map -> map.get(map
-                                .keySet()
-                                .stream()
-                                .findFirst()
-                                .get())
-                        .getConfig()
-                        .getIcon())
-                .collect(Collectors.joining());
+        String icons = getIcons(cell);
         builder.append(icons);
         int iconsCount = (int) cell.getGroups()
                 .values()
                 .stream()
                 .filter(map -> !map.isEmpty())
-                .limit(cellCharCount)
+                .limit(cellIconCount)
                 .count();
-        if (iconsCount < cellCharCount) {
-            builder.append("◾".repeat(cellCharCount - iconsCount));
+        if (iconsCount < cellIconCount) {
+            builder.append("◾".repeat(cellIconCount - iconsCount));
         }
     }
 }

@@ -150,6 +150,7 @@ public class ThreadWorker extends ThreadAction {
             island.add(children);
         }
         childrenList.clear();
+        island.resetGlobalOrganismIndex();
 
         populationBarrier.await();
     }

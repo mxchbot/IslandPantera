@@ -11,7 +11,8 @@ public class ConsoleRunner {
         View view = null;
         try {
             Island island = new Island();
-            view = new ConsoleView(island);
+            view = new ConsoleView();
+            view.setIsland(island);
             Application application = new Application(view, island);
             application.run();
         } catch (Throwable e) {
