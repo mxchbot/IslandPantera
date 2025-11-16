@@ -65,7 +65,8 @@ public class ThreadWorker extends ThreadAction {
                     onCompletedOrganismGroupsIteration);
         }
         if (populationBarrier == null) {
-            populationBarrier = new CyclicBarrier(threadsNum);
+            populationBarrier = new CyclicBarrier(threadsNum,
+                    onCompletedGlobalListIteration);
         }
     }
 
@@ -150,9 +151,12 @@ public class ThreadWorker extends ThreadAction {
             island.add(children);
         }
         childrenList.clear();
-        island.resetGlobalOrganismIndex();
 
         populationBarrier.await();
+        Throwable throwable = onCompletedGlobalListIteration.getThrowable();
+        if (throwable != null) {
+            throw throwable;
+        }
     }
 
     private static class OnCompletedGlobalListIteration extends ThreadAction {

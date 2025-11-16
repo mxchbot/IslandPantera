@@ -1,5 +1,5 @@
 applicationConfig:
-  tickPeriodMillis: 1000
+  tickPeriodMillis: 100
 
 
 consoleConfig:
@@ -31,7 +31,7 @@ islandConfig:
     Boar: 100
     Buffalo: 100
     Duck: 100
-    Grass: 100000
+    Grass: 400000
     Caterpillar: 10
 
   cellCapacity:
