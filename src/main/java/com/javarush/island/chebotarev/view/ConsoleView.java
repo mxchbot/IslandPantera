@@ -5,6 +5,8 @@ import com.javarush.island.chebotarev.island.Cell;
 
 public class ConsoleView extends View {
 
+    private static final String EMPTY_POSITION = "◾";
+
     public ConsoleView() {
         super(Settings.get().getConsoleConfig().getCellIconCount());
     }
@@ -51,7 +53,7 @@ public class ConsoleView extends View {
                 .limit(cellIconCount)
                 .count();
         if (iconsCount < cellIconCount) {
-            builder.append("◾".repeat(cellIconCount - iconsCount));
+            builder.append(EMPTY_POSITION.repeat(cellIconCount - iconsCount));
         }
     }
 }

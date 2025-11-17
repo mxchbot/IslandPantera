@@ -16,15 +16,15 @@ import java.io.StringWriter;
 
 public class JavaFXView extends View {
 
-    private final int STATISTICS_WIDTH = 200;
-    private final int STATISTICS_FONT_SIZE = 18;
-    private final int CELL_LABEL_FONT_SIZE = 14;
-    private final int ALERT_WIDTH = 800;
-    private final int windowsWidth = Settings.get().getWindowConfig().getWidth();
-    private final int windowsHeight = Settings.get().getWindowConfig().getHeight();
-    private final int rows = Settings.get().getIslandConfig().getRows();
-    private final int columns = Settings.get().getIslandConfig().getColumns();
-    private final Label[][] labelCells = new Label[rows][columns];
+    private static final int STATISTICS_WIDTH = 200;
+    private static final int STATISTICS_FONT_SIZE = 18;
+    private static final int CELL_LABEL_FONT_SIZE = 14;
+    private static final int ALERT_WIDTH = 800;
+    private static final int WINDOW_WIDTH = Settings.get().getWindowConfig().getWidth();
+    private static final int WINDOW_HEIGHT = Settings.get().getWindowConfig().getHeight();
+    private static final int ROWS = Settings.get().getIslandConfig().getRows();
+    private static final int COLUMNS = Settings.get().getIslandConfig().getColumns();
+    private final Label[][] labelCells = new Label[ROWS][COLUMNS];
     private final Label statistics;
     private Thread logicThread;
 
@@ -33,7 +33,7 @@ public class JavaFXView extends View {
         statistics = createStatisticsBox();
         GridPane islandPane = createIslandPane();
         HBox hBox = new HBox(islandPane, statistics);
-        Scene scene = new Scene(hBox, windowsWidth, windowsHeight);
+        Scene scene = new Scene(hBox, WINDOW_WIDTH, WINDOW_HEIGHT);
         stage.setScene(scene);
         stage.show();
     }
@@ -75,17 +75,17 @@ public class JavaFXView extends View {
 
     private GridPane createIslandPane() {
         GridPane islandPane = new GridPane();
-        islandPane.setPrefHeight(windowsHeight);
-        islandPane.setPrefWidth(windowsWidth - STATISTICS_WIDTH);
-        for (int i = 0; i < columns; i++) {
+        islandPane.setPrefHeight(WINDOW_HEIGHT);
+        islandPane.setPrefWidth(WINDOW_WIDTH - STATISTICS_WIDTH);
+        for (int i = 0; i < COLUMNS; i++) {
             ColumnConstraints column = new ColumnConstraints();
-            column.setPercentWidth(100d / columns);
+            column.setPercentWidth(100d / COLUMNS);
             column.setHgrow(Priority.ALWAYS);
             islandPane.getColumnConstraints().add(column);
         }
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < ROWS; i++) {
             RowConstraints row = new RowConstraints();
-            row.setPercentHeight(100d / rows);
+            row.setPercentHeight(100d / ROWS);
             row.setVgrow(Priority.NEVER);
             islandPane.getRowConstraints().add(row);
         }
@@ -103,10 +103,10 @@ public class JavaFXView extends View {
     }
 
     private String[][] prepareIslandData() {
-        String[][] data = new String[rows][columns];
+        String[][] data = new String[ROWS][COLUMNS];
         Cell[][] cells = island.getCells();
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 0; column < COLUMNS; column++) {
                 data[row][column] = getIcons(cells[row][column]);
             }
         }
@@ -145,8 +145,8 @@ public class JavaFXView extends View {
         }
 
         private void showIsland() {
-            int rows = view.rows;
-            int columns = view.columns;
+            int rows = view.ROWS;
+            int columns = view.COLUMNS;
             Label[][] labelCells = view.labelCells;
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < columns; column++) {

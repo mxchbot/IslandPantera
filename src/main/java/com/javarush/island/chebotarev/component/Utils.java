@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
 
-    public static final int availableProcessors = Runtime.getRuntime().availableProcessors();
+    public static final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
     private static final double EPSILON = 1.0E-9;
 
     public static ThreadLocalRandom getThreadLocalRandom() {

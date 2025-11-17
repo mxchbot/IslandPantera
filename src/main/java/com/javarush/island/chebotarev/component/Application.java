@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 public class Application {
 
-    private final long TICK_BARRIER_TIMEOUT_SECONDS = 5;
+    private static final long TICK_BARRIER_TIMEOUT_SECONDS = 5;
     private final List<ThreadWorker> workers = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
     private final long tickPeriodNanos;
@@ -52,7 +52,7 @@ public class Application {
     }
 
     private void startThreads(Island island) {
-        int threadsNum = Utils.availableProcessors;
+        int threadsNum = Utils.AVAILABLE_PROCESSORS;
         tickBarrier = new CyclicBarrier((threadsNum + 1), onStartedTick);
         for (int i = 0; i < threadsNum; i++) {
             ThreadWorker threadWorker = new ThreadWorker(island, tickBarrier, threadsNum);
