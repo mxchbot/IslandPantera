@@ -1,5 +1,5 @@
 applicationConfig:
-  tickPeriodMillis: 100
+  tickPeriodMillis: 300
 
 
 consoleConfig:
@@ -18,19 +18,19 @@ islandConfig:
 
   population:
     Wolf: 100
-    Boa: 100
-    Fox: 100
+    Boa: 10000
+    Fox: 10000
     Bear: 100
-    Eagle: 100
-    Horse: 100
-    Deer: 200
-    Rabbit: 100
-    Mouse: 100
-    Goat: 100
-    Sheep: 100
+    Eagle: 10000
+    Horse: 500
+    Deer: 500
+    Rabbit: 100000
+    Mouse: 100000
+    Goat: 1000
+    Sheep: 1000
     Boar: 100
     Buffalo: 100
-    Duck: 100
+    Duck: 1000
     Grass: 400000
     Caterpillar: 10
 

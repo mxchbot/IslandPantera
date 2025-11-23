@@ -1,6 +1,5 @@
 package com.javarush.island.chebotarev.organism.insect;
 
-import com.javarush.island.chebotarev.component.Utils;
 import com.javarush.island.chebotarev.organism.Organism;
 import com.javarush.island.chebotarev.config.OrganismConfig;
 
@@ -26,7 +25,9 @@ public class Insect extends Organism {
 
     @Override
     public List<Organism> reproduction(Collection<Organism> organisms) {
-        int childrenNum = Utils.random(1, (organisms.size() + 1));
+        int childrenNum = organisms.size() / 10;
+        childrenNum = (childrenNum == 0) ? 1 : childrenNum;
+        //int childrenNum = Utils.random(1, (organisms.size() + 1));
         List<Organism> children = createChildren(childrenNum);
         double maxWeight = getConfig().getMaxWeight();
         for (Organism child : children) {
